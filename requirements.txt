@@ -1,0 +1,10 @@
+flask
+boto3
+PyMuPDF
+pymupdf4llm
+docx2python
+sentence-transformers
+spacy
+dateparser
+faiss-cpu
+numpy
