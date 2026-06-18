@@ -5,13 +5,13 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 458207137853.dkr.ecr.us-east-1.amazonaws.com
+      - IMAGE_URI=458207137853.dkr.ecr.us-east-1.amazonaws.com/resume-intelligence:amd64
   build:
     commands:
       - echo Building Docker image...
-      - docker buildx build --platform linux/amd64 -t resume-intelligence:amd64 .
-      - docker tag resume-intelligence:amd64 458207137853.dkr.ecr.us-east-1.amazonaws.com/resume-intelligence:amd64
+      - docker buildx build --platform linux/amd64 -t $IMAGE_URI .
   post_build:
     commands:
       - echo Pushing image to ECR...
-      - docker push 458207137853.dkr.ecr.us-east-1.amazonaws.com/resume-intelligence:amd64
+      - docker push $IMAGE_URI
       - echo Build complete.
