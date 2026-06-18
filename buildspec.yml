@@ -1,0 +1,17 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 458207137853.dkr.ecr.us-east-1.amazonaws.com
+  build:
+    commands:
+      - echo Building Docker image...
+      - docker buildx build --platform linux/amd64 -t resume-intelligence:amd64 .
+      - docker tag resume-intelligence:amd64 458207137853.dkr.ecr.us-east-1.amazonaws.com/resume-intelligence:amd64
+  post_build:
+    commands:
+      - echo Pushing image to ECR...
+      - docker push 458207137853.dkr.ecr.us-east-1.amazonaws.com/resume-intelligence:amd64
+      - echo Build complete.
