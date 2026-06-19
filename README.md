@@ -156,3 +156,5 @@ docker run -p 8080:8080 -e AWS_REGION=us-east-1 resume-intelligence
 ## Author
 
 Built by Zenith Ganduri - AWS AI Practitioner (December 2025), AWS ML Engineer Associate (May 2026)
+
+![Architecture diagram](architecture.svg)
