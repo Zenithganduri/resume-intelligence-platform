@@ -24,6 +24,6 @@ phases:
           docker rm resume-app || true &&
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 458207137853.dkr.ecr.us-east-1.amazonaws.com &&
           docker pull $IMAGE_URI &&
-          docker run -d -p 8080:8080 -e AWS_REGION=us-east-1 -e AWS_ACCESS_KEY_ID=\$(aws configure get aws_access_key_id) -e AWS_SECRET_ACCESS_KEY=\$(aws configure get aws_secret_access_key) --name resume-app $IMAGE_URI
+          docker run -d -p 8080:8080 -e AWS_REGION=us-east-1 -e AWS_ACCESS_KEY_ID=\$(aws configure get aws_access_key_id) -e AWS_SECRET_ACCESS_KEY=\$(aws configure get aws_secret_access_key) --restart unless-stopped --name resume-app $IMAGE_URI
         "
       - echo Deployment complete.
