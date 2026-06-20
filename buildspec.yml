@@ -14,4 +14,16 @@ phases:
     commands:
       - echo Pushing image to ECR...
       - docker push $IMAGE_URI
-      - echo Build complete.
+      - echo Deploying to EC2...
+      - aws secretsmanager get-secret-value --secret-id resume-key-pem --query SecretString --output text > /tmp/deploy-key.pem
+      - chmod 400 /tmp/deploy-key.pem
+      - EC2_IP=$(aws ec2 describe-instances --instance-ids i-09eb0634bd75eb771 --query "Reservations[0].Instances[0].PublicIpAddress" --output text)
+      - |
+        ssh -o StrictHostKeyChecking=no -i /tmp/deploy-key.pem ec2-user@$EC2_IP "
+          docker stop resume-app || true &&
+          docker rm resume-app || true &&
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 458207137853.dkr.ecr.us-east-1.amazonaws.com &&
+          docker pull $IMAGE_URI &&
+          docker run -d -p 8080:8080 -e AWS_REGION=us-east-1 -e AWS_ACCESS_KEY_ID=\$(aws configure get aws_access_key_id) -e AWS_SECRET_ACCESS_KEY=\$(aws configure get aws_secret_access_key) --name resume-app $IMAGE_URI
+        "
+      - echo Deployment complete.
